@@ -1,4 +1,4 @@
-package com.hisuntech.entity;
+package com.hisuntech.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class MySQL {
     /**
      * @return 字符串类型的list
      */
-    private List<String> getStringTypeList(){
+    public List<String> getStringTypeList(){
         List<String> list = new ArrayList<>();
         list.add(CHAR);
         list.add(VARCHAR);

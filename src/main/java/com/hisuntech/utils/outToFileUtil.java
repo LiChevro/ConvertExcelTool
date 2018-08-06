@@ -18,7 +18,8 @@ import java.util.List;
  */
 public class outToFileUtil {
 
-    public static void outToFile(List<StringBuffer> list, List<StringBuffer> list1, List<StringBuffer> listTableSpace,List<StringBuffer> list2, List<Table> tables) throws IOException {
+    public static void outToFile(List<StringBuffer> list, List<StringBuffer> list1,List<StringBuffer> list2,
+                                 List<StringBuffer> list3,List<StringBuffer> listTableSpace,List<Table> tables) throws IOException {
         FileWriter fw = null;
         PrintWriter pw = null;
         int t = 0;
@@ -30,14 +31,11 @@ public class outToFileUtil {
             File f = new File(address.toString());
             fw = new FileWriter(f, true);
             pw = new PrintWriter(fw);
-            pw.println(listTableSpace.get(t));
-            pw.println("\n");
             pw.println(list.get(t));
-            pw.println("\n");
             pw.println(list1.get(t));
-            pw.println("\n");
             pw.println(list2.get(t));
-            pw.println("\n");
+//            pw.println(list3.get(t));
+            pw.println(listTableSpace.get(t));
             t++;
             pw.flush();
             fw.flush();

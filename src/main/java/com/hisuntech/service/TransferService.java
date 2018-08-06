@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TransferService {
@@ -15,22 +16,20 @@ public class TransferService {
     public void transferExcel(String path){
         List<Table> tableList = new ArrayList<>();
         tableList = TransferExcelUtil.readExcel(path);
-        List<StringBuffer> sqlList = new ArrayList();
-        List<StringBuffer> sqlList2 = new ArrayList();
-        List<StringBuffer> sqlList3 = new ArrayList<>();
-        List<StringBuffer> sqlTableSpace = new ArrayList<>();
-        //1.转化为相应数据库的数据类型
-        tableList = TypeMappingUtil.ChangeTypeALL(tableList);
-        //2.转化SQL
-        sqlList = GenerateSqlUtil.outCreatedSql(tableList);
-        sqlList2 = GenerateSqlUtil.outCommentSql(tableList);
-        //2.1 指定数据库表的表空间
-        sqlTableSpace = GenerateSqlUtil.outTableSpace(tableList);
-        //3.生成索引
-        sqlList3 = CreateIndexUtil.outIndexSQL(tableList);
-        //4.输出到文件
+        Map<String,List> map = GenerateSqlUtil.outSql(tableList);
+        //1.生成创建表的SQL
+        List<StringBuffer> sqlList = map.get("createSqlList");
+        //2.设置主键的SQL
+        List<StringBuffer> sqlList2 = map.get("primarySqlList");
+        //3.注释的SQL
+        List<StringBuffer> sqlList3 = map.get("commentSQL");
+        //4.生成索引
+        List<StringBuffer> sqlList4 = CreateIndexUtil.outIndexSQL(tableList);
+        //5.表空间
+        List<StringBuffer> listTableSpace = GenerateSqlUtil.outTableSpace(tableList);
+        //5.输出到文件
         try {
-            outToFileUtil.outToFile(sqlList,sqlList2,sqlTableSpace,sqlList3,tableList);
+            outToFileUtil.outToFile(sqlList,sqlList2,sqlList3,sqlList4,listTableSpace,tableList);
         } catch (IOException e) {
             e.printStackTrace();
         }
