@@ -19,7 +19,7 @@ import java.util.List;
 public class outToFileUtil {
 
     public static void outToFile(List<StringBuffer> list, List<StringBuffer> list1,List<StringBuffer> list2,
-                                 List<StringBuffer> list3,List<StringBuffer> listTableSpace,List<Table> tables) throws IOException {
+                                 List<StringBuffer> list3,List<Table> tables,String savePath) throws IOException {
         FileWriter fw = null;
         PrintWriter pw = null;
         int t = 0;
@@ -27,7 +27,7 @@ public class outToFileUtil {
             //如果文件存在，则追加内容；如果文件不存在，则创建文件
             StringBuffer address = new StringBuffer();
             String fieldTableName = table.getTableEnName();
-            address.append("E:\\" + fieldTableName).append(".sql");
+            address.append(savePath + "/"+fieldTableName).append(".sql");
             File f = new File(address.toString());
             fw = new FileWriter(f, true);
             pw = new PrintWriter(fw);
@@ -35,7 +35,6 @@ public class outToFileUtil {
             pw.println(list1.get(t));
             pw.println(list2.get(t));
 //            pw.println(list3.get(t));
-            pw.println(listTableSpace.get(t));
             t++;
             pw.flush();
             fw.flush();

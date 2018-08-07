@@ -4,7 +4,6 @@ import com.hisuntech.entity.Table;
 import com.hisuntech.utils.*;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +24,9 @@ public class TransferService {
         List<StringBuffer> sqlList3 = map.get("commentSQL");
         //4.生成索引
         List<StringBuffer> sqlList4 = CreateIndexUtil.outIndexSQL(tableList);
-        //5.表空间
-        List<StringBuffer> listTableSpace = GenerateSqlUtil.outTableSpace(tableList);
         //5.输出到文件
         try {
-            outToFileUtil.outToFile(sqlList,sqlList2,sqlList3,sqlList4,listTableSpace,tableList);
+            outToFileUtil.outToFile(sqlList,sqlList2,sqlList3,sqlList4,tableList,"E://");
         } catch (IOException e) {
             e.printStackTrace();
         }

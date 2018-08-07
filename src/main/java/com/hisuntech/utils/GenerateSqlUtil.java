@@ -54,7 +54,6 @@ public class GenerateSqlUtil {
             String fieldEnName = field.getFieldEnName();
             String fieldType = field.getFieldType();
             String isNullAble = field.getIsNullAble();
-            String isPrimaryKey = field.getIsPrimaryKey();
             String defaultValue = field.getDefaultValue();
             createSQL.append("  " + fieldEnName).append("  " + fieldType);
             if (defaultValue != "") {
@@ -72,12 +71,6 @@ public class GenerateSqlUtil {
                     createSQL.append(",");
                 }
             }
-           /* if (YES.equals(isPrimaryKey)) {
-                createSQL.append("  " + PRIMARY_KEY +"  "+PREFIX_ALIAS+ fieldEnName);
-                if (YES.equals(isNullAble) && count != 1) {                                                                     //处理逗号
-                    createSQL.append(",");
-                }
-            }*/
             if (NO.equals(isNullAble)) {
                 if (count == 1) {
                     createSQL.append("  " + NOT_NULL);
@@ -88,9 +81,16 @@ public class GenerateSqlUtil {
             createSQL.append("\n");
             count--;
         }
-        createSQL.append(");\n");
-        System.out.println("\n建表SQL：" + createSQL);
-        return createSQL;
+        //指定表空间
+        if (ORACLE.equals(table.getDatabaseBrand().toUpperCase()) || DB2.equals(table.getDatabaseBrand().toUpperCase())){
+            createSQL.append(")").append(table.getTableSpace()).append(";");
+            System.out.println("\n建表SQL：" + createSQL);
+            return createSQL;
+        }else{
+            createSQL.append(");\n");
+            System.out.println("\n建表SQL：" + createSQL);
+            return createSQL;
+        }
     }
 
     /**
@@ -162,11 +162,11 @@ public class GenerateSqlUtil {
         return commentSQL;
     }
 
-    /**
+/*    *//**
      * @Description 指定表空间的SQL
      * @param tables
      * @return
-     */
+     *//*
     public static List<StringBuffer> outTableSpace(List<Table> tables) {
         List<StringBuffer> list = new ArrayList<>();
         for (Table table : tables) {
@@ -175,7 +175,7 @@ public class GenerateSqlUtil {
             list.add(tableSpaceSQL);
         }
         return list;
-    }
+    }*/
 
     /**
      * 设置表的主键
