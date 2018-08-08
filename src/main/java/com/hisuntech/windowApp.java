@@ -1,6 +1,7 @@
 package com.hisuntech;
 
 import com.hisuntech.entity.Table;
+import com.hisuntech.utils.CreateIndexUtil;
 import com.hisuntech.utils.GenerateSqlUtil;
 import com.hisuntech.utils.TransferExcelUtil;
 import com.hisuntech.utils.outToFileUtil;
@@ -139,17 +140,19 @@ public class windowApp {
                     tableList = TransferExcelUtil.readExcel(path);
                     Map<String,List> map = GenerateSqlUtil.outSql(tableList);
                     //1.生成创建表的SQL
-                    List<StringBuffer> sqlList = map.get("createSqlList");
+                    List<StringBuffer> createSqlList = map.get("createSqlList");
                     //2.设置主键的SQL
-                    List<StringBuffer> sqlList2 = map.get("primarySqlList");
+                    List<StringBuffer> primarySqlList = map.get("primarySqlList");
                     //3.注释的SQL
-                    List<StringBuffer> sqlList3 = map.get("commentSQL");
+                    List<StringBuffer> commentSqlList = map.get("commentSQL");
                     //4.生成索引
-                    List<StringBuffer> sqlList4 = null;
+                    List<StringBuffer> indexSqlList = CreateIndexUtil.outIndexSQL(tableList);
                     //5.输出到文件
                     try {
-                        outToFileUtil.outToFile(sqlList,sqlList2,sqlList3,sqlList4,tableList,savePath);
+                        outToFileUtil.outToFile(createSqlList,primarySqlList,commentSqlList,indexSqlList,tableList,savePath);
+                        JOptionPane.showMessageDialog(frame,"转化SQL脚本成功","成功",JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(frame,"未知错误","失败",JOptionPane.ERROR_MESSAGE);
                         ex.printStackTrace();
                     }
 

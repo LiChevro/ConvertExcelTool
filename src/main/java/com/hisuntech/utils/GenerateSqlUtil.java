@@ -3,6 +3,7 @@ package com.hisuntech.utils;
 import com.hisuntech.entity.Field;
 import com.hisuntech.service.MySQL;
 import com.hisuntech.entity.Table;
+import groovy.util.IFileNameFinder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,14 +69,30 @@ public class GenerateSqlUtil {
                 }
             }else{
                 if(YES.equals(isNullAble) && count != 1){                    //处理逗号
-                    createSQL.append(",");
+                    if (MYSQL.equals(table.getDatabaseBrand().toUpperCase()) && field.getFieldDescription() != ""){
+                        createSQL.append("");
+                    }else{
+                        createSQL.append(",");
+                    }
+
                 }
             }
             if (NO.equals(isNullAble)) {
-                if (count == 1) {
+                createSQL.append("  "+NOT_NULL);
+                if(count != 1 && !MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
+                    createSQL.append(",");
+                }
+      /*          if (count == 1) {
                     createSQL.append("  " + NOT_NULL);
                 } else {
                     createSQL.append("  " + NOT_NULL + ",");
+                }*/
+            }
+            //如果数据库是MySQL,则将字段和表的注释加到建表语句的后面
+            if (MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
+                createSQL.append("  "+COMMENT).append("  "+"'").append(field.getFieldDescription()).append("'");
+                if (count != 1){
+                    createSQL.append(",");
                 }
             }
             createSQL.append("\n");
@@ -87,7 +104,11 @@ public class GenerateSqlUtil {
             System.out.println("\n建表SQL：" + createSQL);
             return createSQL;
         }else{
-            createSQL.append(");\n");
+            createSQL.append(")");
+            if (MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
+                createSQL.append(COMMENT).append("=").append("'"+table.getTableChName()+"'");
+            }
+            createSQL.append(";\n");
             System.out.println("\n建表SQL：" + createSQL);
             return createSQL;
         }
@@ -115,7 +136,7 @@ public class GenerateSqlUtil {
                 commentSQL = outOracleAndDB2CommentSql(table);
                 commentSqlList.add(commentSQL);
             }else if (table.getDatabaseBrand().toUpperCase().equals(MYSQL)){
-                commentSQL = outMySQLCommentSql(table);
+//                commentSQL = outMySQLCommentSql(table);
                 commentSqlList.add(commentSQL);
             }
         }
@@ -148,7 +169,7 @@ public class GenerateSqlUtil {
      * @param table
      * @return
      */
-    public static StringBuffer outMySQLCommentSql(Table table){
+/*    public static StringBuffer outMySQLCommentSql(Table table){
         StringBuffer commentSQL = new StringBuffer();
         List<Field> fieldList = table.getFields();
         commentSQL.append(ALTER).append("  "+TABLE+"  ").append(table.getTableEnName()).append("  "+COMMENT).append("  "+"'" + table.getTableChName() + "'" + ";" + "\n");
@@ -160,7 +181,7 @@ public class GenerateSqlUtil {
         });
         System.out.println("\n注释SQL：" + commentSQL);
         return commentSQL;
-    }
+    }*/
 
 /*    *//**
      * @Description 指定表空间的SQL
@@ -187,7 +208,6 @@ public class GenerateSqlUtil {
         List<Field> fieldList = table.getFields();
         primaryKeySQL.append(ALTER).append("  "+TABLE+"  ").append(table.getTableEnName()).append("  " + ADD).append("  "+CONSTRAINT).append("  "+PREFIX_ALIAS).append(table.getTableEnName()).append("  "+PRIMARY_KEY).append("  "+"(");
         long count =  fieldList.stream().filter(field -> field.getIsPrimaryKey().equals(YES)).count();               //计数器
-        System.out.println(count);
         for (Field field:fieldList){
             String isPrimaryKey = field.getIsPrimaryKey();
             if (YES.equals(isPrimaryKey)){
@@ -199,7 +219,7 @@ public class GenerateSqlUtil {
             }
         }
         primaryKeySQL.append(");");
-        System.out.println("主键:"+primaryKeySQL);
+        System.out.println("设置主键:"+primaryKeySQL);
         return primaryKeySQL;
     }
 
@@ -211,7 +231,7 @@ public class GenerateSqlUtil {
     public static boolean checkStringType(String defaultValue) {
         MySQL mySQL = new MySQL();
         List<String> list = mySQL.getStringTypeList();
-        if (list.stream().anyMatch(typeValue -> defaultValue.contains(typeValue.toUpperCase()))){
+        if (list.stream().anyMatch(typeValue -> defaultValue.toUpperCase().contains(typeValue.toUpperCase()))){
             return true;
         }else{
             return false;
@@ -219,8 +239,8 @@ public class GenerateSqlUtil {
     }
 
     public static void main(String[] args) {
-        Field field = new Field("groupName", "组织名", "varchar", "否", "是", "", "001", "D", "组织名");
-        Field field1 = new Field("groupid", "组织名", "int", "是", "是", "", "001", "D", "组织名");
+        Field field = new Field("groupName", "组织名", "varchar", "是", "是", "", "001", "D", "组织名");
+        Field field1 = new Field("groupid", "组织名", "int", "是", "否", "", "001", "D", "组织名");
         Field field2 = new Field("group123", "组织123", "varchar", "是", "否", "0123", "001", "D", "组织名");
         List<Field> list = new ArrayList<>();
         list.add(field);

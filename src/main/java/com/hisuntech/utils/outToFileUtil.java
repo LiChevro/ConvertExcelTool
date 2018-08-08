@@ -29,12 +29,12 @@ public class outToFileUtil {
             String fieldTableName = table.getTableEnName();
             address.append(savePath + "/"+fieldTableName).append(".sql");
             File f = new File(address.toString());
-            fw = new FileWriter(f, true);
+            fw = new FileWriter(f, false);
             pw = new PrintWriter(fw);
             pw.println(list.get(t));
             pw.println(list1.get(t));
             pw.println(list2.get(t));
-//            pw.println(list3.get(t));
+            pw.println(list3.get(t));
             t++;
             pw.flush();
             fw.flush();
