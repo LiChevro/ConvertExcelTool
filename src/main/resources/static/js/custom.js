@@ -61,11 +61,11 @@ $(document).ready(function(){
             },
             dragDrop: {},
             uploadFile: {
-                url: "./php/upload.php",
+                url: "/ajax/upload",
                 data: {},
                 type: 'POST',
                 enctype: 'multipart/form-data',
-                beforeSend: function(){},
+                beforeSend: function(){alert("上传文件")},
                 success: function(data, el){
                     var parent = el.find(".jFiler-jProgressBar").parent();
                     el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
@@ -174,6 +174,8 @@ $(document).ready(function(){
         changeInput: '<div class="jFiler-input-dragDrop"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-folder"></i></div><div class="jFiler-input-text"><h3>Click on this box</h3> <span style="display:inline-block; margin: 15px 0">or</span></div><a class="jFiler-input-choose-btn blue-light">Browse Files</a></div></div>',
         showThumbs: true,
         theme: "dragdropbox",
+        extensions: ['xls','xlsx'],
+        uploadFile: filer_default_opts.uploadFile,
         templates: filer_default_opts.templates
     });
 

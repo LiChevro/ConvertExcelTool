@@ -427,7 +427,7 @@
 					_upload: function(i) {
 						var el = f._itFc.html,
 							formData = new FormData();
-						formData.append(s.attr('name'), f._itFc.file, (f._itFc.file.name ? f._itFc.file.name : false));
+						formData.append(s.attr('uploadExcel'), f._itFc.file, (f._itFc.file.name ? f._itFc.file.name : false));
 						if(n.uploadFile.data != null && $.isPlainObject(n.uploadFile.data)) {
 							for(var k in n.uploadFile.data) {
 								formData.append(k, n.uploadFile.data[k])
@@ -944,7 +944,7 @@
 			}
 		},
 		files: null,
-		uploadFile: null,
+		uploadFile: $("#fileForm")[0],
 		dragDrop: null,
 		addMore: false,
 		clipBoardPaste: true,
@@ -965,8 +965,8 @@
 			drop: "Drop file here to Upload",
 			removeConfirmation: "Are you sure you want to remove this file?",
 			errors: {
-				filesLimit: "Only {{fi-limit}} files are allowed to be uploaded.",
-				filesType: "Only Images are allowed to be uploaded.",
+				filesLimit: "Only Excel files are allowed to be uploaded.",
+				filesType: "Only Excel are allowed to be uploaded.",
 				filesSize: "{{fi-name}} is too large! Please upload file up to {{fi-maxSize}} MB.",
 				filesSizeAll: "Files you've choosed are too large! Please upload files up to {{fi-maxSize}} MB."
 			}

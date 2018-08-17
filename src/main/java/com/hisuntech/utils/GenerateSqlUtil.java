@@ -3,7 +3,6 @@ package com.hisuntech.utils;
 import com.hisuntech.entity.Field;
 import com.hisuntech.service.MySQL;
 import com.hisuntech.entity.Table;
-import groovy.util.IFileNameFinder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class GenerateSqlUtil {
 
 
     /**
-     * @Descripton 拼接SQL
+     * @Descripton 拼接SQL版本一
      * @param table
      * @return
      */
@@ -57,15 +56,13 @@ public class GenerateSqlUtil {
             String isNullAble = field.getIsNullAble();
             String defaultValue = field.getDefaultValue();
             createSQL.append("  " + fieldEnName).append("  " + fieldType);
+            //设置默认值
             if (defaultValue != "") {
                 createSQL.append("  " + DEFAULT);
                 if (checkStringType(fieldType)){
                     createSQL.append("  "+"'"+defaultValue+"'");
                 }else{
                     createSQL.append("  "+defaultValue);
-                }
-                if(YES.equals(isNullAble) && count != 1){                    //处理逗号
-                    createSQL.append(",");
                 }
             }else{
                 if(YES.equals(isNullAble) && count != 1){                    //处理逗号
@@ -74,19 +71,14 @@ public class GenerateSqlUtil {
                     }else{
                         createSQL.append(",");
                     }
-
                 }
             }
             if (NO.equals(isNullAble)) {
                 createSQL.append("  "+NOT_NULL);
+                //处理逗号
                 if(count != 1 && !MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
                     createSQL.append(",");
                 }
-      /*          if (count == 1) {
-                    createSQL.append("  " + NOT_NULL);
-                } else {
-                    createSQL.append("  " + NOT_NULL + ",");
-                }*/
             }
             //如果数据库是MySQL,则将字段和表的注释加到建表语句的后面
             if (MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
@@ -136,7 +128,6 @@ public class GenerateSqlUtil {
                 commentSQL = outOracleAndDB2CommentSql(table);
                 commentSqlList.add(commentSQL);
             }else if (table.getDatabaseBrand().toUpperCase().equals(MYSQL)){
-//                commentSQL = outMySQLCommentSql(table);
                 commentSqlList.add(commentSQL);
             }
         }
@@ -163,40 +154,6 @@ public class GenerateSqlUtil {
          System.out.println("\n注释SQL：" + commentSQL);
         return commentSQL;
     }
-
-    /**
-     * @Description MySQL的注释SQL
-     * @param table
-     * @return
-     */
-/*    public static StringBuffer outMySQLCommentSql(Table table){
-        StringBuffer commentSQL = new StringBuffer();
-        List<Field> fieldList = table.getFields();
-        commentSQL.append(ALTER).append("  "+TABLE+"  ").append(table.getTableEnName()).append("  "+COMMENT).append("  "+"'" + table.getTableChName() + "'" + ";" + "\n");
-        fieldList.stream().forEach(field -> {
-            String fieldEnName = field.getFieldEnName();
-            String fieldDescription = field.getFieldDescription();
-            String fieldType = field.getFieldType();
-            commentSQL.append(ALTER).append("  "+TABLE+"  ").append(table.getTableEnName()).append("  "+MODIFY).append("  "+COLUMN+"  ").append(fieldEnName).append("  "+fieldType).append("  "+COMMENT).append("  " + "'" + fieldDescription + "'" + ";" + "\n");
-        });
-        System.out.println("\n注释SQL：" + commentSQL);
-        return commentSQL;
-    }*/
-
-/*    *//**
-     * @Description 指定表空间的SQL
-     * @param tables
-     * @return
-     *//*
-    public static List<StringBuffer> outTableSpace(List<Table> tables) {
-        List<StringBuffer> list = new ArrayList<>();
-        for (Table table : tables) {
-            StringBuffer tableSpaceSQL = new StringBuffer();
-            tableSpaceSQL.append(table.getTableSpace() + ";");
-            list.add(tableSpaceSQL);
-        }
-        return list;
-    }*/
 
     /**
      * 设置表的主键
@@ -238,8 +195,23 @@ public class GenerateSqlUtil {
         }
     }
 
+    /**
+     * @Description 检查是否是日期类型
+     * @param defaultValue
+     * @return返回true则是字符串类型的数据类型
+     */
+    public static boolean checkDateType(String defaultValue){
+        MySQL mySQL = new MySQL();
+        List<String> list = mySQL.getDateTypeList();
+        if (list.stream().anyMatch(typeValue -> defaultValue.toUpperCase().contains(typeValue.toUpperCase()))){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     public static void main(String[] args) {
-        Field field = new Field("groupName", "组织名", "varchar", "是", "是", "", "001", "D", "组织名");
+        Field field = new Field("groupName", "组织名", "varchar", "否", "是", "", "001", "D", "组织名");
         Field field1 = new Field("groupid", "组织名", "int", "是", "否", "", "001", "D", "组织名");
         Field field2 = new Field("group123", "组织123", "varchar", "是", "否", "0123", "001", "D", "组织名");
         List<Field> list = new ArrayList<>();

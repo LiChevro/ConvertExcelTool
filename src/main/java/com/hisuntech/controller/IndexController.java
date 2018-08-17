@@ -16,5 +16,10 @@ public class IndexController {
         return "/upload";
     }
 
+    @RequestMapping("/download")
+    public String download(){
+        return "download";
+    }
+
 
 }

@@ -4,7 +4,7 @@
 	<meta charset="UTF-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>Init DataBase</title>
+	<title>Download</title>
 	<link rel="stylesheet" type="text/css" href="../static/css/reset.css" th:href="@{/css/reset.css}"/>
 	<link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
 	<link rel="stylesheet" type="text/css" href="../static/css/default.css" th:href="@{/css/default.css}" />
@@ -26,34 +26,11 @@
                      <div class="tab-content">
                             <div role="tabpanel" class="tab-pane pt20 pb20 fade in active" id="demo-default">
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <b>使用规则:</b>
-                                        <br/><br/>
-                                        <p>以我们提供的Excel模板为准，点击 <span class="text-info"><a href="#" th:href="@{/toDownload?filename=template.xlsx}">这里</a></span>下载，Excel<span class="text-success"><em>使用规则</em></span>如下.</p>
-                                        <div class="pre-box collapsed">
-											<div class="pre-collapse">
-												<i class="fa fa-code pull-left"></i> + Show the source code</div>
-											<pre class="prettyprint lang-js">
-1.数据库信息的sheet不要删除
-2.不要修改表sheet的模板的内容
-3.需要生成什么表的SQL就在数据库信息处填对应的sheet名
-4.目前支持生成三种数据库Oracle，DB2，MySQL。在对应出填写对应的名字就可以
-											</pre></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <b>Choose A File:</b>
-                                        <br/><br/>
-                                        <form id="fileForm" action="" method="post" enctype="multipart/form-data" class="text-center" name="uploadExcel">
-                                            <input type="file" name="uploadExcel" />
-                                            <input type="submit" class="btn-custom green" value="Submit" onclick="upload()"/>
-                                        </form>
-                                    </div>
-                                </div>
+
 
                             </div>
 
-                        </div>
+                     </div>
 
                 </div>
             </div>

@@ -55,4 +55,17 @@ public class MySQL {
         return list;
     }
 
+    /**
+     * @return 日期类型的Date
+     */
+    public List<String> getDateTypeList(){
+        List<String> list = new ArrayList<>();
+        list.add(DATE);
+        list.add(TIME);
+        list.add(YEAR);
+        list.add(DATETIME);
+        list.add(TIMESTAMP);
+        return list;
+    }
+
 }

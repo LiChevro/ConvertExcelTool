@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <h1>Init DataBase</h1>
-<form id="form" method="POST" action="/ajax/upload" enctype="multipart/form-data">
-    <input type="file" name="file"/><br/><br/>
-    <input type="file" id="file_input" webkitdirectory = "directory" />
-    <input type="submit" value="Submit"/>
+<form id="fileForm" method="POST" action="" enctype="multipart/form-data" name="uploadExcel">
+    <input type="file" name="uploadExcel"/><br/><br/>
+    <input type="submit" value="Submit" onclick="upload()"/>
 </form>
 <script src="../static/js/upload.js" th:src="@{/js/upload.js}" type="text/javascript"></script>
+<script src="../static/js/jquery-2.1.1.min.js" th:src="@{/js/jquery-2.1.1.min.js}" type="text/javascript"></script>
 </body>
 </html>
