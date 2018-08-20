@@ -1,10 +1,7 @@
 package com.hisuntech;
 
 import com.hisuntech.entity.Table;
-import com.hisuntech.utils.CreateIndexUtil;
-import com.hisuntech.utils.GenerateSqlUtil;
-import com.hisuntech.utils.TransferExcelUtil;
-import com.hisuntech.utils.outToFileUtil;
+import com.hisuntech.utils.*;
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
 import java.awt.EventQueue;
@@ -15,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -26,6 +24,7 @@ public class windowApp {
     private JFrame frame;
     private JTextField textField;
     private JTextField textField_1;
+    private JComboBox comboBox;
 
     /**
      * Launch the application.
@@ -126,41 +125,52 @@ public class windowApp {
         textField_1.setBounds(35, 90, 266, 41);
         frame.getContentPane().add(textField_1);
 
+        comboBox = new JComboBox();
+        comboBox.setModel(new DefaultComboBoxModel(new String[] {"模式1", "模式2"}));
+        comboBox.setBounds(346, 22, 91, 32);
+        frame.getContentPane().add(comboBox);
         JButton btnNewButton_1 = new JButton("\u751F\u6210SQL");
         btnNewButton_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!textField.getText().equals("")&&!textField_1.getText().equals("")) {
                     System.out.println(textField.getText());//输出路径
                     System.out.println(textField_1.getText());//输入路径
-
-                    //这里写文件处理程序
-                    String savePath = textField.getText();
+                    System.out.println(comboBox.getSelectedItem());//模式
                     String path = textField_1.getText();
-                    List<Table> tableList = new ArrayList<>();
-                    tableList = TransferExcelUtil.readExcel(path);
-                    Map<String,List> map = GenerateSqlUtil.outSql(tableList);
-                    //1.生成创建表的SQL
+                    String savePath = textField.getText();
+                    List<Table> tableList = TransferExcelUtil.readExcel(path);
+                    Map<String,List> map = new HashMap<>();
+                    List<StringBuffer> indexSqlList = new ArrayList<>();
+                    //这里写文件处理程序
+                    if (comboBox.getSelectedItem().equals("模式1")) {
+                        //模式一
+                        map = GenerateSQLVersion1.outSql(tableList);
+                        //生成版本一的索引
+                        indexSqlList = CreateIndexUtil.outIndexSQL(tableList,"1");
+                    }
+                    if (comboBox.getSelectedItem().equals("模式2")) {
+                        //模式二
+                        map = GenerateSQLVersion2.outSql(tableList);
+                        //生成版本二的索引
+                        indexSqlList = CreateIndexUtil.outIndexSQL(tableList,"2");
+                    }
+                    //生成创建表的SQL
                     List<StringBuffer> createSqlList = map.get("createSqlList");
-                    //2.设置主键的SQL
+                    //设置主键的SQL
                     List<StringBuffer> primarySqlList = map.get("primarySqlList");
-                    //3.注释的SQL
+                    //注释的SQL
                     List<StringBuffer> commentSqlList = map.get("commentSQL");
-                    //4.生成索引
-                    List<StringBuffer> indexSqlList = CreateIndexUtil.outIndexSQL(tableList);
-                    //5.输出到文件
+                    //输出到文件
                     try {
-                        outToFileUtil.outToFile(createSqlList,primarySqlList,commentSqlList,indexSqlList,tableList,savePath);
+                        OutToFileUtil.outToFile(createSqlList,primarySqlList,commentSqlList,indexSqlList,tableList,savePath);
                         JOptionPane.showMessageDialog(frame,"转化SQL脚本成功","成功",JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(frame,"未知错误","失败",JOptionPane.ERROR_MESSAGE);
                         ex.printStackTrace();
                     }
-
                 }else {
                     JOptionPane.showMessageDialog(frame, "请选择文件与路径", "错误",JOptionPane.WARNING_MESSAGE);
                 }
-
-
             }
         });
         btnNewButton_1.setBounds(35, 256, 391, 60);

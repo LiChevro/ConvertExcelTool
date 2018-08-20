@@ -18,55 +18,66 @@ public class CreateIndexUtil {
     static StringBuffer createIndexSQL = new StringBuffer();
     static List<StringBuffer> list = new ArrayList<>();
 
-    public static List<StringBuffer> outIndexSQL(List<Table> tables) {
-        String fieldEnName, fieldIndexNum, fieldIndexType = "";
+    public static List<StringBuffer> outIndexSQL(List<Table> tables, String fieldTableType) {
+        String fieldEnName, fieldIndexNum, isPrimaryKey = "", fieldIndexType = "";
         //遍历每一张表
         for (Table table : tables) {
             List<Field> fieldList = table.getFields();
             createIndexSQL = new StringBuffer("");
             int count = fieldList.size(), k = fieldList.size();           //计数器，观察是否到了最后一个元素
-            String[] strs1 = new String[count];
-            String[] strs2 = new String[count];
-            String[] strs3 = new String[count];
+            //索引编号数组
+            String[] fieldIndexNums = new String[count];
+            //字段英文名数组
+            String[] fieldEnNames = new String[count];
+            //索引类型数组
+            String[] fieldIndexTypes = new String[count];
             //将字段英文名，索引编号，索引类型，存放在数组中，方便使用，给没有索引编号的自动生成数字
             for (Field field : fieldList) {
                 fieldEnName = field.getFieldEnName();
                 fieldIndexNum = field.getIndexNum();
                 fieldIndexType = field.getIndexType();
-                strs1[count - 1] = fieldIndexNum;//{2,2,3,5,2,5,8}
-                strs2[count - 1] = fieldEnName;//{a,b,c,d,e,f,g}
-                strs3[count - 1] = fieldIndexType;//{"D","U","","","D","U","U"}
-                if ("".equals(strs1[count - 1])) {
-                    strs1[count - 1] = String.valueOf(k++);
+                isPrimaryKey = field.getIsPrimaryKey();
+                fieldIndexNums[count - 1] = fieldIndexNum;//{2,2,3,5,2,5,8}
+                fieldEnNames[count - 1] = fieldEnName;//{a,b,c,d,e,f,g}
+                fieldIndexTypes[count - 1] = fieldIndexType;//{"D","U","","","D","U","U"}
+                if ("".equals(fieldIndexNums[count - 1])) {
+                    fieldIndexNums[count - 1] = String.valueOf(k++);
+                }
+                if ("是".equals(isPrimaryKey)) {
+                    fieldIndexTypes[count - 1] = "U";
+                    System.out.println("fieldIndexTypes[count - 1]:  " + fieldIndexTypes[count - 1]);
                 }
                 count--;
             }
             //动态拼接SQL，如果索引编号相同的话，将相同的行生成组合索引
             String tableName = table.getTableEnName();
             //System.out.println("table.getTableEnName():  " + tableName);
-            for (int i = 0; i < strs1.length; i++) {
-                String h = strs1[i];
-                String name = strs2[i];
-                String type = strs3[i];
+            if ("2".equalsIgnoreCase(fieldTableType)) {
+                createIndexSQL.append("CREATE UNIQUE INDEX " + tableName).append("_IDX0").append(" ON " + tableName + "(id);\n");
+            }
+            for (int i = 0; i < fieldIndexNums.length; i++) {
+                String h = fieldIndexNums[i];
+                String type = fieldIndexTypes[i];
                 boolean repeated = false;
                 for (int j = 0; j < i; j++) {
-                    if (h.equals(strs1[j])) {
+                    if (h.equals(fieldIndexNums[j])) {
                         repeated = true;
                         break;
                     }
                 }
                 if (!repeated) {
                     StringBuffer sb = new StringBuffer();
-                    for (int j = 0; j < strs1.length; j++) {
-                        if (h.equals(strs1[j])) {
-                            sb.append(",").append(strs2[j]);
+                    for (int j = 0; j < fieldIndexNums.length; j++) {
+                        if (h.equals(fieldIndexNums[j])) {
+                            sb.append(",").append(fieldEnNames[j]);
                         }
                     }
                     sb.delete(0, 1);
+
                     if ("D".equals(type.toUpperCase())) {
-                        createIndexSQL.append("CREATE INDEX " + tableName + "_" + name).append("_IDX" + h).append(" ON " + tableName + "(" + sb.toString() + ");\n");
+                        createIndexSQL.append("CREATE INDEX " + tableName).append("_IDX" + h).append(" ON " + tableName + "(" + sb.toString() + ");\n");
                     } else if ("U".equals(type.toUpperCase())) {
-                        createIndexSQL.append("CREATE UNIQUE INDEX " + tableName + "_" + name).append("_IDX" + h).append(" ON " + tableName + "(" + sb.toString() + ");\n");
+                        createIndexSQL.append("CREATE UNIQUE INDEX " + tableName).append("_IDX" + h).append(" ON " + tableName + "(" + sb.toString() + ");\n");
                     } else {
                         createIndexSQL.append("");
                     }
@@ -78,6 +89,7 @@ public class CreateIndexUtil {
         }
         return list;
     }
+
     //测试
     public static void main(String[] args) {
         Field field = new Field("groupName", "组织名", "varchar", "是", "是", "", "001", "D", "组织名");
@@ -102,7 +114,8 @@ public class CreateIndexUtil {
         List<Table> tableList = new ArrayList<>();
         tableList.add(table);
         tableList.add(table1);
-        outIndexSQL(tableList);
+        outIndexSQL(tableList,"2");
     }
+
 
 }

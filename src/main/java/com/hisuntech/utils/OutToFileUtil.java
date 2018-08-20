@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 〈将sql语句输出到各个txt〉<br>
@@ -16,7 +17,7 @@ import java.util.List;
  * @create 2018/8/2
  * @since 1.0.0
  */
-public class outToFileUtil {
+public class OutToFileUtil {
 
     public static void outToFile(List<StringBuffer> list, List<StringBuffer> list1,List<StringBuffer> list2,
                                  List<StringBuffer> list3,List<Table> tables,String savePath) throws IOException {
@@ -31,10 +32,18 @@ public class outToFileUtil {
             File f = new File(address.toString());
             fw = new FileWriter(f, false);
             pw = new PrintWriter(fw);
-            pw.println(list.get(t));
-            pw.println(list1.get(t));
-            pw.println(list2.get(t));
-            pw.println(list3.get(t));
+            if (list != null){
+                pw.println(list.get(t));
+            }
+            if (list1 != null){
+                pw.println(list1.get(t));
+            }
+            if (list2 != null){
+                pw.println(list2.get(t));
+            }
+            if (list3 != null){
+                pw.println(list3.get(t));
+            }
             t++;
             pw.flush();
             fw.flush();

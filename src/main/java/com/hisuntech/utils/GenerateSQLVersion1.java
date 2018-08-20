@@ -3,6 +3,7 @@ package com.hisuntech.utils;
 import com.hisuntech.entity.Field;
 import com.hisuntech.service.MySQL;
 import com.hisuntech.entity.Table;
+import com.hisuntech.service.SqlWords;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,30 +15,10 @@ import java.util.Map;
  * @author ll
  * @created 2018.7.31
  */
-public class GenerateSqlUtil {
+public class GenerateSQLVersion1 {
 
     private static final String YES = "是";
     private static final String NO = "否";
-
-    private static final String CREATE = "CREATE";
-    private static final String TABLE = "TABLE";
-    private static final String DEFAULT = "DEFAULT";
-    private static final String PRIMARY_KEY = "PRIMARY KEY";
-    private static final String PREFIX_ALIAS = "PK_";
-    private static final String NOT_NULL = "NOT NULL";
-    
-    private static final String ORACLE = "ORACLE";
-    private static final String DB2 = "DB2";
-    private static final String MYSQL = "MYSQL";
-
-    private static final String COMMENT = "COMMENT";
-    private static final String ON = "ON";
-    private static final String COLUMN = "COLUMN";
-    private static final String IS = "IS";
-    private static final String ALTER = "ALTER";
-    private static final String MODIFY = "MODIFY";
-    private static final String CONSTRAINT = "CONSTRAINT";
-    private static final String ADD = "ADD";
 
 
     /**
@@ -47,7 +28,7 @@ public class GenerateSqlUtil {
      */
     public static StringBuffer appendSql(Table table) {
         StringBuffer createSQL = new StringBuffer();
-        createSQL.append(CREATE).append("  "+TABLE).append("  " + table.getTableEnName()).append("(" + "\n");
+        createSQL.append(SqlWords.CREATE).append("  "+SqlWords.TABLE).append("  " + table.getTableEnName()).append("(" + "\n");
         List<Field> fieldList = table.getFields();
         int count = fieldList.size();                                                                                                   //计数器，观察是否到了最后一个元素
         for (Field field : fieldList) {
@@ -58,15 +39,15 @@ public class GenerateSqlUtil {
             createSQL.append("  " + fieldEnName).append("  " + fieldType);
             //设置默认值
             if (defaultValue != "") {
-                createSQL.append("  " + DEFAULT);
-                if (checkStringType(fieldType)){
+                createSQL.append("  " + SqlWords.DEFAULT);
+                if (MySQL.checkStringType(fieldType)){
                     createSQL.append("  "+"'"+defaultValue+"'");
                 }else{
                     createSQL.append("  "+defaultValue);
                 }
             }else{
                 if(YES.equals(isNullAble) && count != 1){                    //处理逗号
-                    if (MYSQL.equals(table.getDatabaseBrand().toUpperCase()) && field.getFieldDescription() != ""){
+                    if (SqlWords.MYSQL.equals(table.getDatabaseBrand().toUpperCase()) && field.getFieldDescription() != ""){
                         createSQL.append("");
                     }else{
                         createSQL.append(",");
@@ -74,15 +55,15 @@ public class GenerateSqlUtil {
                 }
             }
             if (NO.equals(isNullAble)) {
-                createSQL.append("  "+NOT_NULL);
+                createSQL.append("  "+SqlWords.NOT_NULL);
                 //处理逗号
-                if(count != 1 && !MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
+                if(count != 1 && !SqlWords.MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
                     createSQL.append(",");
                 }
             }
             //如果数据库是MySQL,则将字段和表的注释加到建表语句的后面
-            if (MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
-                createSQL.append("  "+COMMENT).append("  "+"'").append(field.getFieldDescription()).append("'");
+            if (SqlWords.MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
+                createSQL.append("  "+SqlWords.COMMENT).append("  "+"'").append(field.getFieldDescription()).append("'");
                 if (count != 1){
                     createSQL.append(",");
                 }
@@ -91,14 +72,14 @@ public class GenerateSqlUtil {
             count--;
         }
         //指定表空间
-        if (ORACLE.equals(table.getDatabaseBrand().toUpperCase()) || DB2.equals(table.getDatabaseBrand().toUpperCase())){
+        if (SqlWords.ORACLE.equals(table.getDatabaseBrand().toUpperCase()) || SqlWords.DB2.equals(table.getDatabaseBrand().toUpperCase())){
             createSQL.append(")").append(table.getTableSpace()).append(";");
             System.out.println("\n建表SQL：" + createSQL);
             return createSQL;
         }else{
             createSQL.append(")");
-            if (MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
-                createSQL.append(COMMENT).append("=").append("'"+table.getTableChName()+"'");
+            if (SqlWords.MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
+                createSQL.append(SqlWords.COMMENT).append("=").append("'"+table.getTableChName()+"'");
             }
             createSQL.append(";\n");
             System.out.println("\n建表SQL：" + createSQL);
@@ -124,10 +105,10 @@ public class GenerateSqlUtil {
             primaryKey = outSetPrimaryKey(table);
             createSqlList.add(createSQL);
             primarySqlList.add(primaryKey);
-            if (table.getDatabaseBrand().toUpperCase().equals(ORACLE) || table.getDatabaseBrand().equals(DB2)){
+            if (table.getDatabaseBrand().toUpperCase().equals(SqlWords.ORACLE) || table.getDatabaseBrand().equals(SqlWords.DB2)){
                 commentSQL = outOracleAndDB2CommentSql(table);
                 commentSqlList.add(commentSQL);
-            }else if (table.getDatabaseBrand().toUpperCase().equals(MYSQL)){
+            }else if (table.getDatabaseBrand().toUpperCase().equals(SqlWords.MYSQL)){
                 commentSqlList.add(commentSQL);
             }
         }
@@ -145,25 +126,25 @@ public class GenerateSqlUtil {
     public static StringBuffer outOracleAndDB2CommentSql(Table table) {
          StringBuffer commentSQL = new StringBuffer();
          List<Field> fieldList = table.getFields();
-         commentSQL.append(COMMENT).append("  "+ON+"  ").append(TABLE).append("  " + table.getTableEnName()).append("  " + IS).append("  " + "'" + table.getTableChName() + "'" + ";" + "\n");
+         commentSQL.append(SqlWords.COMMENT).append("  "+SqlWords.ON+"  ").append(SqlWords.TABLE).append("  " + table.getTableEnName()).append("  " + SqlWords.IS).append("  " + "'" + table.getTableChName() + "'" + ";" + "\n");
          fieldList.stream().forEach(field -> {
              String fieldEnName = field.getFieldEnName();
              String fieldDescription = field.getFieldDescription();
-             commentSQL.append(COMMENT).append("  "+ON+"  ").append(COLUMN).append("  " + table.getTableEnName() + ".").append(fieldEnName).append("  " + "IS").append("  " + "'" + fieldDescription + "'" + ";" + "\n");
+             commentSQL.append(SqlWords.COMMENT).append("  "+SqlWords.ON+"  ").append(SqlWords.COLUMN).append("  " + table.getTableEnName() + ".").append(fieldEnName).append("  " + "IS").append("  " + "'" + fieldDescription + "'" + ";" + "\n");
          });
          System.out.println("\n注释SQL：" + commentSQL);
         return commentSQL;
     }
 
     /**
-     * 设置表的主键
+     * 设置表的主键,版本一，以Excel表中选的主键为准
      * @param table
      * @return
      */
     public static StringBuffer outSetPrimaryKey(Table table){
         StringBuffer primaryKeySQL = new StringBuffer();
         List<Field> fieldList = table.getFields();
-        primaryKeySQL.append(ALTER).append("  "+TABLE+"  ").append(table.getTableEnName()).append("  " + ADD).append("  "+CONSTRAINT).append("  "+PREFIX_ALIAS).append(table.getTableEnName()).append("  "+PRIMARY_KEY).append("  "+"(");
+        primaryKeySQL.append(SqlWords.ALTER).append("  "+SqlWords.TABLE+"  ").append(table.getTableEnName()).append("  " + SqlWords.ADD).append("  "+SqlWords.CONSTRAINT).append("  "+SqlWords.PREFIX_ALIAS).append(table.getTableEnName()).append("  "+SqlWords.PRIMARY_KEY).append("  "+"(");
         long count =  fieldList.stream().filter(field -> field.getIsPrimaryKey().equals(YES)).count();               //计数器
         for (Field field:fieldList){
             String isPrimaryKey = field.getIsPrimaryKey();
@@ -180,35 +161,6 @@ public class GenerateSqlUtil {
         return primaryKeySQL;
     }
 
-    /**
-     * @Description 检查是否是字符串类型的数据类型
-     * @param defaultValue
-     * @return 返回true则是字符串类型的数据类型
-     */
-    public static boolean checkStringType(String defaultValue) {
-        MySQL mySQL = new MySQL();
-        List<String> list = mySQL.getStringTypeList();
-        if (list.stream().anyMatch(typeValue -> defaultValue.toUpperCase().contains(typeValue.toUpperCase()))){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    /**
-     * @Description 检查是否是日期类型
-     * @param defaultValue
-     * @return返回true则是字符串类型的数据类型
-     */
-    public static boolean checkDateType(String defaultValue){
-        MySQL mySQL = new MySQL();
-        List<String> list = mySQL.getDateTypeList();
-        if (list.stream().anyMatch(typeValue -> defaultValue.toUpperCase().contains(typeValue.toUpperCase()))){
-            return true;
-        }else {
-            return false;
-        }
-    }
 
     public static void main(String[] args) {
         Field field = new Field("groupName", "组织名", "varchar", "否", "是", "", "001", "D", "组织名");

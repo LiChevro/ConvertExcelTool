@@ -271,7 +271,7 @@ public class TransferExcelUtil {
         String path = "F:\\HiSunTech\\template.xlsx";
         List<Table> tableList = new ArrayList<>();
         tableList = readExcel(path);
-        Map<String,List> map = GenerateSqlUtil.outSql(tableList);
+        Map<String,List> map = GenerateSQLVersion1.outSql(tableList);
         //1.生成创建表的SQL
         List<StringBuffer> sqlList = map.get("createSqlList");
         //2.设置主键的SQL
@@ -282,7 +282,7 @@ public class TransferExcelUtil {
         List<StringBuffer> sqlList4 = null;
         //5.输出到文件
         try {
-            outToFileUtil.outToFile(sqlList,sqlList2,sqlList3,sqlList4,tableList,"E://");
+            OutToFileUtil.outToFile(sqlList,sqlList2,sqlList3,sqlList4,tableList,"E://");
         } catch (IOException e) {
             e.printStackTrace();
         }

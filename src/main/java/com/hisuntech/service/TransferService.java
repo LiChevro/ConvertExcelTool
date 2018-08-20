@@ -27,7 +27,7 @@ public class TransferService {
         }
         List<Table> tableList = new ArrayList<>();
         tableList = TransferExcelUtil.readExcel(path);
-        Map<String,List> map = GenerateSqlUtil.outSql(tableList);
+        Map<String,List> map = GenerateSQLVersion1.outSql(tableList);
         //1.生成创建表的SQL
         List<StringBuffer> sqlList = map.get("createSqlList");
         //2.设置主键的SQL
@@ -35,10 +35,10 @@ public class TransferService {
         //3.注释的SQL
         List<StringBuffer> sqlList3 = map.get("commentSQL");
         //4.生成索引
-        List<StringBuffer> sqlList4 = CreateIndexUtil.outIndexSQL(tableList);
+        List<StringBuffer> sqlList4 = CreateIndexUtil.outIndexSQL(tableList,"1");
         //5.输出到文件
         try {
-            outToFileUtil.outToFile(sqlList,sqlList2,sqlList3,sqlList4,tableList,sqlFile.getParentFile().getPath());
+            OutToFileUtil.outToFile(sqlList,sqlList2,sqlList3,sqlList4,tableList,sqlFile.getParentFile().getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
