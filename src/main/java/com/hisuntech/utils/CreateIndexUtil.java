@@ -43,18 +43,20 @@ public class CreateIndexUtil {
                 if ("".equals(fieldIndexNums[count - 1])) {
                     fieldIndexNums[count - 1] = String.valueOf(k++);
                 }
-                if ("是".equals(isPrimaryKey)) {
-                    fieldIndexTypes[count - 1] = "U";
-                    System.out.println("fieldIndexTypes[count - 1]:  " + fieldIndexTypes[count - 1]);
+                if ("2".equalsIgnoreCase(fieldTableType)) {
+                    if ("是".equals(isPrimaryKey)) {
+                        fieldIndexTypes[count - 1] = "U";
+                        System.out.println("fieldIndexTypes[count - 1]:  " + fieldIndexTypes[count - 1]);
+                    }
                 }
                 count--;
             }
             //动态拼接SQL，如果索引编号相同的话，将相同的行生成组合索引
             String tableName = table.getTableEnName();
             //System.out.println("table.getTableEnName():  " + tableName);
-            if ("2".equalsIgnoreCase(fieldTableType)) {
-                createIndexSQL.append("CREATE UNIQUE INDEX " + tableName).append("_IDX0").append(" ON " + tableName + "(id);\n");
-            }
+//            if ("2".equalsIgnoreCase(fieldTableType)) {
+//                createIndexSQL.append("CREATE UNIQUE INDEX " + tableName).append("_IDX0").append(" ON " + tableName + "(id);\n");
+//            }
             for (int i = 0; i < fieldIndexNums.length; i++) {
                 String h = fieldIndexNums[i];
                 String type = fieldIndexTypes[i];
