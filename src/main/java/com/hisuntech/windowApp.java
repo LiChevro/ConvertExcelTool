@@ -126,7 +126,7 @@ public class windowApp {
         frame.getContentPane().add(textField_1);
 
         comboBox = new JComboBox();
-        comboBox.setModel(new DefaultComboBoxModel(new String[] {"模式1", "模式2"}));
+        comboBox.setModel(new DefaultComboBoxModel(new String[] {"模式1", "模式2","模式3"}));
         comboBox.setBounds(346, 22, 91, 32);
         frame.getContentPane().add(comboBox);
         JButton btnNewButton_1 = new JButton("\u751F\u6210SQL");
@@ -154,6 +154,10 @@ public class windowApp {
                         //生成版本二的索引
                         indexSqlList = CreateIndexUtil.outIndexSQL(tableList,"2");
                     }
+                    if (comboBox.getSelectedItem().equals("模式3")){
+                        //模式三（不需要索引）
+                        map = GenerateSQLVersion3.outSql(tableList);
+                    }
                     //生成创建表的SQL
                     List<StringBuffer> createSqlList = map.get("createSqlList");
                     //设置主键的SQL
@@ -164,7 +168,7 @@ public class windowApp {
                     try {
                         OutToFileUtil.outToFile(createSqlList,primarySqlList,commentSqlList,indexSqlList,tableList,savePath);
                         JOptionPane.showMessageDialog(frame,"转化SQL脚本成功","成功",JOptionPane.INFORMATION_MESSAGE);
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame,"未知错误","失败",JOptionPane.ERROR_MESSAGE);
                         ex.printStackTrace();
                     }

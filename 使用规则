@@ -7,3 +7,16 @@
     三、将想转化为SQL的表中的表名记录在“数据库信息”的sheet中
     四、创建索引sql语句，按表名_字段_IDX序列号 命名  D,U,组合索引都可以生成，无索引类型的不生成索引
     五、向Excel中添加数据库表，直接在Excel中添加sheet，并复制已有的数据库表的sheet作为模板
+
+    模式一：
+        以表中的主键为主键，字段非空以表中是否非空为准
+
+     模式二：
+        自动生成ID，create_time，update_time，update_by等字段，
+        对于可以为空的字段设置not  null加默认值，字符类型设为空，数字类型设为0，日期类型设为当前的时间
+        注意：只有ID才能作为主键，其他字段如果在Excel中被设置了主键，依旧当作普通的字段
+
+     模式三：
+        取消ID，取消索引，以Excel表中的键作为主键，保留create_time，update_time，update_by等字段
+         create_time,update_time,update_by这三个字段的类型统一设置为datetime
+

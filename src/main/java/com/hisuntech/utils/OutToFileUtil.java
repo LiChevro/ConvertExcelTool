@@ -29,16 +29,16 @@ public class OutToFileUtil {
             File f = new File(address.toString());
             fos = new FileOutputStream(f,false);
             ps = new PrintStream(fos);
-            if (list != null){
+            if (list != null && list.size() != 0){
                 ps.println(list.get(t));
             }
-            if (list1 != null){
+            if (list1 != null && list1.size() != 0){
                 ps.println(list1.get(t));
             }
-            if (list2 != null){
+            if (list2 != null && list2.size() != 0){
                 ps.println(list2.get(t));
             }
-            if (list3 != null){
+            if (list3 != null && list3.size() != 0){
                 ps.println(list3.get(t));
             }
             t++;
