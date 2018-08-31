@@ -4,13 +4,12 @@ import com.hisuntech.entity.Table;
 import com.hisuntech.utils.*;
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
-import java.awt.EventQueue;
+import java.awt.*;
 
 import javax.swing.*;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,8 +125,10 @@ public class windowApp {
         frame.getContentPane().add(textField_1);
 
         comboBox = new JComboBox();
-        comboBox.setModel(new DefaultComboBoxModel(new String[] {"模式1", "模式2","模式3"}));
+//        comboBox.setModel(new DefaultComboBoxModel(new String[] {"模式1", "模式2","模式3"}));
+        comboBox.setModel(new DefaultComboBoxModel(new String[] {"普通模式", "增强模式"}));
         comboBox.setBounds(346, 22, 91, 32);
+        comboBox.setSelectedIndex(1);               //将模式三设为默认的选项
         frame.getContentPane().add(comboBox);
         JButton btnNewButton_1 = new JButton("\u751F\u6210SQL");
         btnNewButton_1.addActionListener(new ActionListener() {
@@ -135,14 +136,14 @@ public class windowApp {
                 if (!textField.getText().equals("")&&!textField_1.getText().equals("")) {
                     System.out.println(textField.getText());//输出路径
                     System.out.println(textField_1.getText());//输入路径
-                    System.out.println(comboBox.getSelectedItem());//模式
+                    System.out.println(comboBox.getSelectedItem());//   模式
                     String path = textField_1.getText();
                     String savePath = textField.getText();
                     List<Table> tableList = TransferExcelUtil.readExcel(path);
                     Map<String,List> map = new HashMap<>();
                     List<StringBuffer> indexSqlList = new ArrayList<>();
                     //这里写文件处理程序
-                    if (comboBox.getSelectedItem().equals("模式1")) {
+                    if (comboBox.getSelectedItem().equals("普通模式")) {
                         //模式一
                         map = GenerateSQLVersion1.outSql(tableList);
                         //生成版本一的索引
@@ -154,9 +155,11 @@ public class windowApp {
                         //生成版本二的索引
                         indexSqlList = CreateIndexUtil.outIndexSQL(tableList,"2");
                     }
-                    if (comboBox.getSelectedItem().equals("模式3")){
-                        //模式三（不需要索引）
+                    if (comboBox.getSelectedItem().equals("增强模式")){
+                        //模式三
                         map = GenerateSQLVersion3.outSql(tableList);
+                        //生成版本二的索引
+                        indexSqlList = CreateIndexUtil.outIndexSQL(tableList,"2");
                     }
                     //生成创建表的SQL
                     List<StringBuffer> createSqlList = map.get("createSqlList");

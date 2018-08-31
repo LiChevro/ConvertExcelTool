@@ -32,11 +32,11 @@ public class GenerateSQLVersion1 {
         List<Field> fieldList = table.getFields();
         int count = fieldList.size();                                                                                                   //计数器，观察是否到了最后一个元素
         for (Field field : fieldList) {
-            String fieldEnName = field.getFieldEnName();
-            String fieldType = field.getFieldType();
+            String fieldEnName = field.getFieldEnName().trim();
+            String fieldType = field.getFieldType().trim();
             String isNullAble = field.getIsNullAble();
-            String defaultValue = field.getDefaultValue();
-            createSQL.append("  " + fieldEnName).append("  " + fieldType);
+            String defaultValue = field.getDefaultValue().trim();
+            createSQL.append("  " + FormatSqlUtil.formatField(fieldEnName)).append("  " + FormatSqlUtil.formatFieldType(fieldType));
             //设置默认值
             if (defaultValue != "") {
                 createSQL.append("  " + SqlWords.DEFAULT);
@@ -144,12 +144,13 @@ public class GenerateSQLVersion1 {
     public static StringBuffer outSetPrimaryKey(Table table){
         StringBuffer primaryKeySQL = new StringBuffer();
         List<Field> fieldList = table.getFields();
-        primaryKeySQL.append(SqlWords.ALTER).append("  "+SqlWords.TABLE+"  ").append(table.getTableEnName()).append("  " + SqlWords.ADD).append("  "+SqlWords.CONSTRAINT).append("  "+SqlWords.PREFIX_ALIAS).append(table.getTableEnName()).append("  "+SqlWords.PRIMARY_KEY).append("  "+"(");
+        String tableEnName = table.getTableEnName();
+        primaryKeySQL.append(SqlWords.ALTER).append("  "+SqlWords.TABLE+"  ").append(tableEnName).append("  " + SqlWords.ADD).append("  "+SqlWords.CONSTRAINT).append("  "+SqlWords.PREFIX_ALIAS).append(tableEnName.toUpperCase()).append("  "+SqlWords.PRIMARY_KEY).append("  "+"(");
         long count =  fieldList.stream().filter(field -> field.getIsPrimaryKey().equals(YES)).count();               //计数器
         for (Field field:fieldList){
             String isPrimaryKey = field.getIsPrimaryKey();
             if (YES.equals(isPrimaryKey)){
-                primaryKeySQL.append(field.getFieldEnName());
+                primaryKeySQL.append(field.getFieldEnName().trim().toLowerCase());
                 if (count != 1){
                     primaryKeySQL.append(",");
                 }
@@ -163,9 +164,9 @@ public class GenerateSQLVersion1 {
 
 
     public static void main(String[] args) {
-        Field field = new Field("groupName", "组织名", "varchar", "否", "是", "", "001", "D", "组织名");
-        Field field1 = new Field("groupid", "组织名", "int", "是", "否", "", "001", "D", "组织名");
-        Field field2 = new Field("group123", "组织123", "varchar", "是", "否", "0123", "001", "D", "组织名");
+        Field field = new Field("GRROUPNAME  ", "组织名", "varchar", "否", "是", "", "001", "D", "组织名");
+        Field field1 = new Field("GROUPID  ", "组织名", "int", "是", "否", "", "001", "D", "组织名");
+        Field field2 = new Field("group123  ", "组织123", "varchar", "是", "否", "0123", "001", "D", "组织名");
         List<Field> list = new ArrayList<>();
         list.add(field);
         list.add(field1);
