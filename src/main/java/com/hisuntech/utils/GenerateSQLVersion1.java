@@ -36,7 +36,7 @@ public class GenerateSQLVersion1 {
             String fieldType = field.getFieldType().trim();
             String isNullAble = field.getIsNullAble();
             String defaultValue = field.getDefaultValue().trim();
-            createSQL.append("  " + FormatSqlUtil.formatField(fieldEnName)).append("  " + FormatSqlUtil.formatFieldType(fieldType));
+            createSQL.append("  " + FormatSqlUtil.formatField(table,fieldEnName)).append("  " + FormatSqlUtil.formatFieldType(table,fieldType));
             //设置默认值
             if (defaultValue != "") {
                 createSQL.append("  " + SqlWords.DEFAULT);

@@ -41,7 +41,7 @@ public class GenerateSQLVersion3 {
             String isNullAble = field.getIsNullAble();
             String filedDescription = field.getFieldDescription().trim();
             String defaultValue = field.getDefaultValue().trim();
-            createSQL.append("\t").append(FormatSqlUtil.formatField(filedEnName)).append(FormatSqlUtil.formatFieldType(fieldType));
+            createSQL.append("\t").append(FormatSqlUtil.formatField(table,filedEnName)).append(FormatSqlUtil.formatFieldType(table,fieldType.toUpperCase()));
             createSQL.append("  "+SqlWords.NOT_NULL);
             //根据是否允许为空，以及字段类型设置默认值
             if (YES.equals(isNullAble)){
@@ -75,16 +75,17 @@ public class GenerateSQLVersion3 {
                 }
             }
             //如果数据库是MySQL,则将字段和表的注释加到建表语句的后面
-            if (SqlWords.MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
-                createSQL.append("  "+SqlWords.COMMENT).append("  "+"'").append(filedDescription).append("'");
-            }
+//            if (SqlWords.MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
+//                createSQL.append("  "+SqlWords.COMMENT).append("  "+"'").append(filedDescription).append("'");
+//            }
             createSQL.append(","+"\n");
         }
-        createSQL.append("\t").append(FormatSqlUtil.formatField(SqlWords.create_time)).append(FormatSqlUtil.formatFieldType("DATETIME")).append("  "+SqlWords.NOT_NULL).append("  "+SqlWords.DEFAULT).append("  "+SqlWords.CURRENT_TIMESTAMP)
-                .append("  "+SqlWords.COMMENT).append("  "+"'创建时间'").append(","+"\n");
-        createSQL.append("\t").append(FormatSqlUtil.formatField(SqlWords.update_time)).append(FormatSqlUtil.formatFieldType("DATETIME")).append("  "+SqlWords.NOT_NULL).append("  "+SqlWords.DEFAULT).append("  "+SqlWords.CURRENT_TIMESTAMP)
-                .append("  "+SqlWords.ON_UPDATE).append("  "+SqlWords.CURRENT_TIMESTAMP).append("  "+SqlWords.COMMENT).append("  "+"'最近更新日期时间'").append(","+"\n");
-        createSQL.append("\t").append(FormatSqlUtil.formatField(SqlWords.update_by)).append(FormatSqlUtil.formatFieldType("VARCHAR(10)")).append("  "+SqlWords.NOT_NULL).append("  "+SqlWords.COMMENT).append("  "+"'修改人'").append("\n");
+        createSQL.append("\t").append(FormatSqlUtil.formatField(table,SqlWords.create_time)).append(FormatSqlUtil.formatFieldType(table,"DATETIME")).append("  "+SqlWords.NOT_NULL)
+                .append(","+"\n");
+        createSQL.append("\t").append(FormatSqlUtil.formatField(table,SqlWords.modify_time)).append(FormatSqlUtil.formatFieldType(table,"DATETIME")).append("  "+SqlWords.NOT_NULL)
+                .append(","+"\n");
+        createSQL.append("\t").append(FormatSqlUtil.formatField(table,SqlWords.update_by)).append(FormatSqlUtil.formatFieldType(table,"VARCHAR(10)")).append("  "+SqlWords.NOT_NULL)
+                .append("\n");
         //指定表空间
         if (SqlWords.ORACLE.equals(table.getDatabaseBrand().toUpperCase()) || SqlWords.DB2.equals(table.getDatabaseBrand().toUpperCase())){
             createSQL.append(")").append(table.getTableSpace()).append(";");
@@ -92,9 +93,9 @@ public class GenerateSQLVersion3 {
             return createSQL;
         }else{
             createSQL.append(")");
-            if (SqlWords.MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
-                createSQL.append(SqlWords.COMMENT).append("=").append("'"+table.getTableChName()+"'");
-            }
+//            if (SqlWords.MYSQL.equals(table.getDatabaseBrand().toUpperCase())){
+//                createSQL.append(SqlWords.COMMENT).append("=").append("'"+table.getTableChName()+"'");
+//            }
             createSQL.append(";\n");
             System.out.println("\n建表SQL：" + createSQL);
             return createSQL;
@@ -128,6 +129,42 @@ public class GenerateSQLVersion3 {
         return primaryKeySQL;
     }
 
+    public static StringBuffer outMySQLComment(Table table){
+        StringBuffer commentSQL = new StringBuffer();
+        String tableChName = table.getTableChName().trim();
+        String tableEnName = table.getTableEnName().trim().toLowerCase();   //英文表名，去掉前后空格，并且小写
+        List<Field> fieldList = table.getFields();
+        commentSQL.append("\n");
+        //表的注释
+        commentSQL.append(SqlWords.ALTER).append("  ")
+                .append(SqlWords.TABLE).append("  ").append(tableEnName).append("  ")
+                .append(SqlWords.COMMENT).append("  ")
+                .append("'").append(tableChName).append("'").append(";");
+        //字段的注释
+        for (Field field:fieldList){
+            String fileEnName = field.getFieldEnName().trim().toLowerCase();        //字段英文名去掉空格小写
+            String fieldType = field.getFieldType().trim().toUpperCase();       //类型去掉空格大写
+            String fieldDescription = field.getFieldDescription().trim();
+            commentSQL.append("\n");
+            commentSQL.append(SqlWords.ALTER).append("  ").append(SqlWords.TABLE).append("  ").append(tableEnName).append("  ")
+                    .append(SqlWords.MODIFY).append("  ").append(SqlWords.COLUMN).append("  ").append(fileEnName).append("  ").append(fieldType).append("  ")
+                    .append(SqlWords.COMMENT).append("  ").append("'").append(fieldDescription).append("'").append(";");
+        }
+        //拼接固定的字段的注释
+        commentSQL.append("\n");
+        commentSQL.append(SqlWords.ALTER).append("  ").append(SqlWords.TABLE).append("  ").append(tableEnName).append("  ")
+                .append(SqlWords.MODIFY).append("  ").append(SqlWords.COLUMN).append("  ").append(SqlWords.create_time).append("  ").append("DATETIME").append("  ")
+                .append(SqlWords.COMMENT).append("  ").append("'").append("创建时间").append("'").append(";").append("\n");
+        commentSQL.append(SqlWords.ALTER).append("  ").append(SqlWords.TABLE).append("  ").append(tableEnName).append("  ")
+                .append(SqlWords.MODIFY).append("  ").append(SqlWords.COLUMN).append("  ").append(SqlWords.modify_time).append("  ").append("DATETIME").append("  ")
+                .append(SqlWords.COMMENT).append("  ").append("'").append("更新时间").append("'").append(";").append("\n");
+        commentSQL.append(SqlWords.ALTER).append("  ").append(SqlWords.TABLE).append("  ").append(tableEnName).append("  ")
+                .append(SqlWords.MODIFY).append("  ").append(SqlWords.COLUMN).append("  ").append(SqlWords.update_by).append("  ").append("DATETIME").append("  ")
+                .append(SqlWords.COMMENT).append("  ").append("'").append("修改人").append("'").append(";").append("\n");
+        System.out.println("注释SQL:\n"+commentSQL);
+        return commentSQL;
+    }
+
 
     /**
      * @Description 输出SQL语句
@@ -150,6 +187,7 @@ public class GenerateSQLVersion3 {
                 commentSQL = GenerateSQLVersion1.outOracleAndDB2CommentSql(table);
                 commentSqlList.add(commentSQL);
             }else if (table.getDatabaseBrand().toUpperCase().equals(SqlWords.MYSQL)){
+                commentSQL = GenerateSQLVersion3.outMySQLComment(table);
                 commentSqlList.add(commentSQL);
             }
         }

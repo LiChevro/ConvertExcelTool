@@ -36,14 +36,14 @@ public class GenerateSQLVersion2 {
         createSQL.append(SqlWords.CREATE).append("  "+SqlWords.TABLE).append("  " + table.getTableEnName()).append("(" + "\n");
         List<Field> fieldList = table.getFields();
         //拼接固定字段ID， int型
-        createSQL.append(FormatSqlUtil.formatField(SqlWords.id)).append(FormatSqlUtil.formatFieldType("INT")).append(SqlWords.PRIMARY_KEY+"  ").append(SqlWords.NOT_NULL).append("  "+SqlWords.AUTO_INCREMENT).append("  "+SqlWords.COMMENT).append("  "+"' '").append(","+"\n");
+        createSQL.append(FormatSqlUtil.formatField(table,SqlWords.id)).append(FormatSqlUtil.formatFieldType(table,"INT")).append(SqlWords.PRIMARY_KEY+"  ").append(SqlWords.NOT_NULL).append("  "+SqlWords.AUTO_INCREMENT).append("  "+SqlWords.COMMENT).append("  "+"' '").append(","+"\n");
         for (Field field:fieldList){
             String filedEnName = field.getFieldEnName().trim();
             String fieldType = field.getFieldType().trim();
             String isNullAble = field.getIsNullAble();
             String filedDescription = field.getFieldDescription().trim();
             String defaultValue = field.getDefaultValue().trim();
-            createSQL.append(FormatSqlUtil.formatField(filedEnName)).append(FormatSqlUtil.formatFieldType(fieldType));
+            createSQL.append(FormatSqlUtil.formatField(table,filedEnName)).append(FormatSqlUtil.formatFieldType(table,fieldType));
             createSQL.append(SqlWords.NOT_NULL);
             //根据是否允许为空，以及字段类型设置默认值
             if (YES.equals(isNullAble)){
@@ -82,11 +82,11 @@ public class GenerateSQLVersion2 {
             }
             createSQL.append(","+"\n");
         }
-        createSQL.append(FormatSqlUtil.formatField(SqlWords.create_time)).append(FormatSqlUtil.formatFieldType("TIMESTAMP")).append(SqlWords.NOT_NULL).append("  "+SqlWords.DEFAULT).append("  "+SqlWords.CURRENT_TIMESTAMP)
+        createSQL.append(FormatSqlUtil.formatField(table,SqlWords.create_time)).append(FormatSqlUtil.formatFieldType(table,"TIMESTAMP")).append(SqlWords.NOT_NULL).append("  "+SqlWords.DEFAULT).append("  "+SqlWords.CURRENT_TIMESTAMP)
                 .append("  "+SqlWords.COMMENT).append("  "+"'创建时间'").append(","+"\n");
-        createSQL.append(FormatSqlUtil.formatField(SqlWords.update_time)).append(FormatSqlUtil.formatFieldType("TIMESTAMP")).append(SqlWords.NOT_NULL).append("  "+SqlWords.DEFAULT).append("  "+SqlWords.CURRENT_TIMESTAMP)
+        createSQL.append(FormatSqlUtil.formatField(table,SqlWords.modify_time)).append(FormatSqlUtil.formatFieldType(table,"TIMESTAMP")).append(SqlWords.NOT_NULL).append("  "+SqlWords.DEFAULT).append("  "+SqlWords.CURRENT_TIMESTAMP)
                 .append("  "+SqlWords.ON_UPDATE).append("  "+SqlWords.CURRENT_TIMESTAMP).append("  "+SqlWords.COMMENT).append("  "+"'最近更新日期时间'").append(","+"\n");
-        createSQL.append(FormatSqlUtil.formatField(SqlWords.update_by)).append(FormatSqlUtil.formatFieldType("VARCHAR(10)")).append(SqlWords.NOT_NULL).append("  "+SqlWords.COMMENT).append("  "+"'修改人'").append("\n");
+        createSQL.append(FormatSqlUtil.formatField(table,SqlWords.update_by)).append(FormatSqlUtil.formatFieldType(table,"VARCHAR(10)")).append(SqlWords.NOT_NULL).append("  "+SqlWords.COMMENT).append("  "+"'修改人'").append("\n");
         //指定表空间
         if (SqlWords.ORACLE.equals(table.getDatabaseBrand().toUpperCase()) || SqlWords.DB2.equals(table.getDatabaseBrand().toUpperCase())){
             createSQL.append(")").append(table.getTableSpace()).append(";");

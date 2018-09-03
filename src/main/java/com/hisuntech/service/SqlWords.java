@@ -14,7 +14,7 @@ public final class SqlWords {
 
     public static final String id = "id";
     public static final String create_time = "create_time";
-    public static final String update_time = "update_time";
+    public static final String modify_time = "modify_time";
     public static final String update_by = "update_by";
 
     public static final String ORACLE = "ORACLE";
