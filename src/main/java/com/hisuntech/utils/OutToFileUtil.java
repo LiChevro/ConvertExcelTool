@@ -20,7 +20,7 @@ public class OutToFileUtil {
                                  List<StringBuffer> list3,List<Table> tables,String savePath) throws IOException {
         FileOutputStream fos = null;        //改用FileOutputStream解决utf-8乱码的问题
         PrintStream ps = null;                   //改用PrintStream解决utf-8乱码的问题
-        int t = tables.size()-1;
+        int t = 0;
         for (Table table : tables) {
             //如果文件存在，则追加内容；如果文件不存在，则创建文件
             StringBuffer address = new StringBuffer();
@@ -41,7 +41,7 @@ public class OutToFileUtil {
             if (list3 != null && list3.size() != 0){
                 ps.println(list3.get(t));
             }
-            t--;
+            t++;
             ps.flush();
             fos.flush();
             ps.close();
