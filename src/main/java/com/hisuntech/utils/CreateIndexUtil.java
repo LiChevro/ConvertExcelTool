@@ -51,6 +51,11 @@ public class CreateIndexUtil {
                 }
                 count--;
             }
+            //对索引编号进行排序
+            List  indexlist = new ArrayList();
+            indexlist = sortIndex(fieldIndexNums,fieldIndexTypes);
+            fieldIndexNums = (String[]) indexlist.get(0);
+            fieldIndexTypes = (String[]) indexlist.get(1);
             //动态拼接SQL，如果索引编号相同的话，将相同的行生成组合索引
             String tableName = table.getTableEnName();
             //System.out.println("table.getTableEnName():  " + tableName);
@@ -92,11 +97,44 @@ public class CreateIndexUtil {
         return list;
     }
 
+
+    /**
+     * 对索引编号进行排序
+     * @author ll
+     * @param indexNum
+     * @param indexType
+     * @return
+     */
+    public static List sortIndex(String[] indexNum,String[] indexType){
+        Integer temp = 0;
+        String tempStr = null;
+        for (int i=0; i<indexNum.length-1; i++){
+            for (int j=indexNum.length - i- 1; j>0; j--){
+                Integer leftValue = Integer.parseInt(indexNum[j-1]);
+                Integer rightValue = Integer.parseInt(indexNum[j]);
+                if (leftValue > rightValue){
+                    temp = leftValue;
+                    leftValue = rightValue;
+                    rightValue = temp;
+                    indexNum[j-1] = leftValue + "";
+                    indexNum[j] = rightValue + "";
+                    tempStr = indexType[j-1];
+                    indexType[j-1] = indexType[j];
+                    indexType[j] = tempStr;
+                }
+            }
+        }
+        List  list = new ArrayList();
+        list.add(indexNum);
+        list.add(indexType);
+        return list;
+    }
+
     //测试
     public static void main(String[] args) {
-        Field field = new Field("groupName", "组织名", "varchar", "是", "是", "", "001", "D", "组织名");
-        Field field1 = new Field("groupid", "组织名", "int", "是", "否", "", "001", "D", "组织名");
-        Field field2 = new Field("group123", "组织123", "varchar", "是", "否", "0123", "001", "D", "组织名");
+        Field field = new Field("groupName", "组织名", "varchar", "是", "是", "", "2", "D", "组织名");
+        Field field1 = new Field("groupid", "组织名", "int", "是", "否", "", "3", "D", "组织名");
+        Field field2 = new Field("group123", "组织123", "varchar", "是", "否", "0123", "1", "D", "组织名");
         List<Field> list = new ArrayList<>();
         list.add(field);
         list.add(field1);

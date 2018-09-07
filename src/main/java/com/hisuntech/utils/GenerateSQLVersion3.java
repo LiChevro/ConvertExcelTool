@@ -129,6 +129,11 @@ public class GenerateSQLVersion3 {
         return primaryKeySQL;
     }
 
+    /**
+     * @Description 输出MySQL的注释
+     * @param table
+     * @return
+     */
     public static StringBuffer outMySQLComment(Table table){
         StringBuffer commentSQL = new StringBuffer();
         String tableChName = table.getTableChName().trim();

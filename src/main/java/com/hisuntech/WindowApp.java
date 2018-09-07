@@ -18,7 +18,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 
-public class windowApp {
+public class WindowApp {
 
     private JFrame frame;
     private JTextField textField;
@@ -50,7 +50,7 @@ public class windowApp {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    windowApp window = new windowApp();
+                    WindowApp window = new WindowApp();
                     window.frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -62,7 +62,7 @@ public class windowApp {
     /**
      * Create the application.
      */
-    public windowApp() {
+    public WindowApp() {
         initialize();
     }
 
@@ -147,7 +147,7 @@ public class windowApp {
                         //模式一
                         map = GenerateSQLVersion1.outSql(tableList);
                         //生成版本一的索引
-                        indexSqlList = CreateIndexUtil.outIndexSQL(tableList,"1");
+                        indexSqlList = CreateIndex.outIndexSql(tableList,"1");
                     }
                     if (comboBox.getSelectedItem().equals("模式2")) {
                         //模式二
@@ -159,7 +159,7 @@ public class windowApp {
                         //模式三
                         map = GenerateSQLVersion3.outSql(tableList);
                         //生成版本二的索引
-                        indexSqlList = CreateIndexUtil.outIndexSQL(tableList,"2");
+                        indexSqlList = CreateIndex.outIndexSql(tableList,"2");
                     }
                     //生成创建表的SQL
                     List<StringBuffer> createSqlList = map.get("createSqlList");

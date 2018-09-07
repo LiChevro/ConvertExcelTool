@@ -32,4 +32,7 @@ public final class SqlWords {
     public static final String AUTO_INCREMENT = "AUTO_INCREMENT";
     public static final String CURRENT_TIMESTAMP = "CURRENT_TIMESTAMP";
     public static final String ON_UPDATE = "ON UPDATE";
+
+    public static final String INDEX = "INDEX";
+    public static final String UNIQUE_INDEX = "UNIQUE INDEX";
 }
