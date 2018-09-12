@@ -140,6 +140,8 @@ public class WindowApp {
                     String path = textField_1.getText();
                     String savePath = textField.getText();
                     List<Table> tableList = TransferExcelUtil.readExcel(path);
+                    //处理类型
+                    tableList = TypeMappingUtil.excuteTrans(tableList);
                     Map<String,List> map = new HashMap<>();
                     List<StringBuffer> indexSqlList = new ArrayList<>();
                     //这里写文件处理程序

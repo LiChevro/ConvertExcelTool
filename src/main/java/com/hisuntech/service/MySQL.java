@@ -10,35 +10,36 @@ import java.util.List;
 public class MySQL {
 
     //数值类型
-    private final String INT = "INT";
-    private final String TINYINT = "TINYINT";
-    private final String SMALLINT = "SMALLINT";
-    private final String MEDIUMINT = "MEDIUMINT";
-    private final String INTEGER = "INTEGER";
-    private final String BIGINT = "BIGINT";
-    private final String FLOAT = "FLOAT";
-    private final String DECIMAL = "DECIMAL";
+    public static final String INT = "INT";
+    public static final String TINYINT = "TINYINT";
+    public static final String SMALLINT = "SMALLINT";
+    public static final String MEDIUMINT = "MEDIUMINT";
+    public static final String INTEGER = "INTEGER";
+    public static final String BIGINT = "BIGINT";
+    public static final String FLOAT = "FLOAT";
+    public static final String DECIMAL = "DECIMAL";
 
     //字符串类型
-    private final String CHAR = "CHAR";
-    private final String VARCHAR = "VARCHAR";
-    private final String TINYBLOB = "TINYBLOB";
-    private final String TINYTEXT = "TINYTEXT";
-    private final String BLOB = "BLOB";
-    private final String TEXT = "TEXT";
-    private final String MEDIUMBLOB = "MEDIUMBLOB";
-    private final String MEDIUMTEXT = "MEDIUMTEXT";
-    private final String LOGNGBLOB = "LOGNGBLOB";
-    private final String LONGTEXT = "LONGTEXT";
-    private final String VARBINARY = "VARBINARY";
-    private final String BINARY = "BINARY";
+    public static final String CHAR = "CHAR";
+    public static final String VARCHAR = "VARCHAR";
+    public static final String TINYBLOB = "TINYBLOB";
+    public static final String TINYTEXT = "TINYTEXT";
+    public static final String BLOB = "BLOB";
+    public static final String TEXT = "TEXT";
+    public static final String MEDIUMBLOB = "MEDIUMBLOB";
+    public static final String MEDIUMTEXT = "MEDIUMTEXT";
+    public static final String LOGNGBLOB = "LOGNGBLOB";
+    public static final String LONGTEXT = "LONGTEXT";
+    public static final String VARBINARY = "VARBINARY";
+    public static final String BINARY = "BINARY";
+    public static final String BIT = "BIT";
 
     //日期类型
-    private final String DATE = "DATE";
-    private final String TIME  = "BINARY";
-    private final String YEAR = "YEAR";
-    private final String DATETIME = "DATETIME";
-    private final String TIMESTAMP = "TIMESTAMP";
+    public static final String DATE = "DATE";
+    public static final String TIME  = "BINARY";
+    public static final String YEAR = "YEAR";
+    public static final String DATETIME = "DATETIME";
+    public static final String TIMESTAMP = "TIMESTAMP";
 
     /**
      * @return 字符串类型的list
@@ -57,6 +58,7 @@ public class MySQL {
         list.add(LONGTEXT);
         list.add(VARBINARY);
         list.add(BINARY);
+        list.add(BIT);
         return list;
     }
 

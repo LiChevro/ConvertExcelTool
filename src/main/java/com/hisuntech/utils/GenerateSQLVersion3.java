@@ -164,7 +164,7 @@ public class GenerateSQLVersion3 {
                 .append(SqlWords.MODIFY).append("  ").append(SqlWords.COLUMN).append("  ").append(SqlWords.modify_time).append("  ").append("DATETIME").append("  ")
                 .append(SqlWords.COMMENT).append("  ").append("'").append("更新时间").append("'").append(";").append("\n");
         commentSQL.append(SqlWords.ALTER).append("  ").append(SqlWords.TABLE).append("  ").append(tableEnName).append("  ")
-                .append(SqlWords.MODIFY).append("  ").append(SqlWords.COLUMN).append("  ").append(SqlWords.update_by).append("  ").append("DATETIME").append("  ")
+                .append(SqlWords.MODIFY).append("  ").append(SqlWords.COLUMN).append("  ").append(SqlWords.update_by).append("  ").append("VARCHAR(10)").append("  ")
                 .append(SqlWords.COMMENT).append("  ").append("'").append("修改人").append("'").append(";").append("\n");
         System.out.println("注释SQL:\n"+commentSQL);
         return commentSQL;
