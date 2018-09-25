@@ -56,7 +56,7 @@ public class TypeMappingUtil {
             if ("8".equals(typeWordList.get(1))){
                 transferType.append(MySQL.DATE);                        //D(8)
             }else{
-                transferType.append(MySQL.DATETIME);                    //D(14)、D(17)
+                transferType.append(MySQL.DATETIME);                     //D(14)、D(17)
             }
         }
         System.out.println("转化后的类型:"+transferType);
